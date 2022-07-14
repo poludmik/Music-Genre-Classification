@@ -11,19 +11,11 @@ from pydub import AudioSegment
 from pydub.utils import make_chunks
 
 
-
 class SoundTools:
 
-    def __init__(self):
-        self.kek = 0
-
     @staticmethod
-    def open(self):
-        print("kek")
-
-
-'''''''''''
-    signal, sample_rate = torchaudio.load(sound_file)
+    def open(sound_file):
+        signal, sample_rate = torchaudio.load(sound_file)
         return signal, sample_rate
 
     @staticmethod
@@ -36,6 +28,15 @@ class SoundTools:
             return signal[0], sample_rate
 
         if new_num_channels == 2:
-            return torch.cat(signal, signal), sample_rate
-            '''''''''
+            return torch.cat((signal, signal)), sample_rate
+
+    @staticmethod
+    def resample(sound, new_sample_rate):
+        signal, sample_rate = sound
+        if sample_rate == new_sample_rate:
+            return sound
+
+        transform = transforms.Resample(sample_rate, new_sample_rate)
+        signal = transform(signal)
+        return signal, new_sample_rate
 

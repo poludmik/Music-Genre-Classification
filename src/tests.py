@@ -17,19 +17,26 @@ df = "C:/Users/micha/homeworks/personal/Music/Data"
 
 audio_file = df + '/genres_original/metal/metal.00009.wav'
 sig, sr = torchaudio.load(audio_file)
+audio = (sig, sr)
 
-audio = SoundTools.open(audio_file)
+# audio = SoundTools.rechannel(audio, 2)
+# sig, sr = audio
+# print(sig)
+
+# 22050
+new_sr = 22050
+audio = SoundTools.resample(audio, new_sr)
+sig, sr = audio
+
 
 print(sig[0].numpy())
 print(sr)
 print(sig.size())
 
-t = np.linspace(0, 1, 22050, endpoint = False)
+t = np.linspace(0, 1, new_sr, endpoint = False)
+plt.plot(t, sig[0].numpy()[0:new_sr])
+plt.show()
 
-# plt.plot(t, sig[0].numpy()[0:22050])
-# plt.show()
-
-# SoundTools.rechannel(sig, 2)
 
 
 
