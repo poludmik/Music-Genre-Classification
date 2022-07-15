@@ -15,7 +15,7 @@ from soundtools import SoundTools
 df = "C:/Users/micha/homeworks/personal/Music/Data"
 
 
-audio_file = df + '/three_second_samples/metal.00069.0.wav'
+audio_file = df + '/three_second_samples/metal.00069.8.wav'
 sig, sr = torchaudio.load(audio_file)
 audio = (sig, sr)
 
@@ -25,13 +25,19 @@ audio = SoundTools.rechannel(audio, 1)
 new_sr = 22050
 audio = SoundTools.resample(audio, new_sr)
 
-seconds = 4
+seconds = 3
 audio = SoundTools.cut_or_pad(audio, seconds)
 sig, sr = audio
 
 audio = SoundTools.random_shift(audio, 0)
 
-SoundTools.plot_sound(audio)
+# SoundTools.plot_sound(audio)
+
+spectr = SoundTools.spectrogram(audio)
+SoundTools.plot_spectogram(spectr)
+
+# spectr = SoundTools.shadow_spectr_segment(spectr)
+# SoundTools.plot_spectogram(spectr)
 
 
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

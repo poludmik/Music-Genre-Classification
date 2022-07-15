@@ -86,6 +86,27 @@ class SoundTools:
         sig = torch.roll(sig, sample_num_to_shift, 1)
         return sig, sr
 
+    @staticmethod
+    def spectrogram(sound, n_mels=90, n_fft=510, hop_len=None):
+        sig, sr = sound
+        max_db = 80
+        spectrum = transforms.MelSpectrogram(sample_rate=sr, n_fft=n_fft, hop_length=hop_len, n_mels=n_mels)(sig)
+        return transforms.AmplitudeToDB(top_db=max_db)(spectrum)
 
+    @staticmethod
+    def plot_spectogram(spectogram):
+        # will plot one channel spectogram
+        spectr = spectogram[0, :, :]
+        plt.imshow(spectr)
+        plt.show()
 
+    @staticmethod
+    def shadow_spectr_segment(spectrogram):
+        # For data augmentation
+        shadow_value = spectrogram.mean()
+        max_time_percent = 0.05
+        max_freq_percent = 0.1
+        spectrogram = transforms.TimeMasking(max_time_percent * spectrogram.size(dim=2))(spectrogram, shadow_value)
+        spectrogram = transforms.FrequencyMasking(max_freq_percent * spectrogram.size(dim=1))(spectrogram, shadow_value)
+        return spectrogram
 
