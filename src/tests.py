@@ -15,32 +15,23 @@ from soundtools import SoundTools
 df = "C:/Users/micha/homeworks/personal/Music/Data"
 
 
-audio_file = df + '/genres_original/metal/metal.00009.wav'
+audio_file = df + '/three_second_samples/metal.00069.0.wav'
 sig, sr = torchaudio.load(audio_file)
 audio = (sig, sr)
 
-# audio = SoundTools.rechannel(audio, 2)
-# sig, sr = audio
-# print(sig)
+audio = SoundTools.rechannel(audio, 1)
 
 # 22050
 new_sr = 22050
 audio = SoundTools.resample(audio, new_sr)
+
+seconds = 4
+audio = SoundTools.cut_or_pad(audio, seconds)
 sig, sr = audio
 
+audio = SoundTools.random_shift(audio, 0)
 
-print(sig[0].numpy())
-print(sr)
-print(sig.size())
-
-t = np.linspace(0, 1, new_sr, endpoint = False)
-plt.plot(t, sig[0].numpy()[0:new_sr])
-plt.show()
-
-
-
-
-
+SoundTools.plot_sound(audio)
 
 
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -61,6 +52,7 @@ idx_overall = 0
 chunk_length_ms = 3000
 
 '''''''''
+# SPLIT TO 3 SECONDS
 for directory in subfolders:
     for filename in os.listdir(directory):
         f = os.path.join(directory, filename)
@@ -79,6 +71,20 @@ for directory in subfolders:
 '''''''''
 
 
+
+'''''''''
+# VALIDATION FOLDER
+directory = df + "/same_name_3seconds/"
+new_directory = df + "/validation_tracks/"
+# for filename in os.listdir(directory):
+for i in range(10):
+    nums = random.sample(range(999), 50)
+    for number in nums:
+        song_number = i * 1000 + number
+        print(song_number)
+        filename = "song" + str(song_number) + ".wav"
+        os.rename(directory + filename, new_directory + filename)
+'''''''''
 
 
 
