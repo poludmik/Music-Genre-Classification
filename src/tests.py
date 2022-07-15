@@ -1,5 +1,7 @@
 import math, random
 import os
+import re
+
 import torch
 import pandas as pd
 import numpy as np
@@ -10,31 +12,46 @@ import matplotlib.pyplot as plt
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 from soundtools import SoundTools
+from dataset import songsDS
+import csv
 
 
 df = "C:/Users/micha/homeworks/personal/Music/Data"
 
+labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
+          5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
 
-audio_file = df + '/three_second_samples/metal.00069.8.wav'
-sig, sr = torchaudio.load(audio_file)
-audio = (sig, sr)
+audio_file = df + '/three_second_samples/metal.00069.8.wav' # WAR PIGS!!!
 
-audio = SoundTools.rechannel(audio, 1)
+dataset = songsDS(train=False)
+track_spectr, track_label = dataset.__getitem__(322)
+print(labels[track_label])
+SoundTools.plot_spectogram(track_spectr)
+
+
+# train_csv = df + "/train_labels.csv"
+# dataframe =  pd.read_csv(train_csv)
+# print(dataframe.loc[4, 'label'])
+
+# sig, sr = torchaudio.load(audio_file)
+# audio = (sig, sr)
+
+# audio = SoundTools.rechannel(audio, 1)
 
 # 22050
-new_sr = 22050
-audio = SoundTools.resample(audio, new_sr)
+# new_sr = 22050
+# audio = SoundTools.resample(audio, new_sr)
 
-seconds = 3
-audio = SoundTools.cut_or_pad(audio, seconds)
-sig, sr = audio
+# seconds = 3
+# audio = SoundTools.cut_or_pad(audio, seconds)
+# sig, sr = audio
 
-audio = SoundTools.random_shift(audio, 0)
+# audio = SoundTools.random_shift(audio, 0)
 
 # SoundTools.plot_sound(audio)
 
-spectr = SoundTools.spectrogram(audio)
-SoundTools.plot_spectogram(spectr)
+# spectr = SoundTools.spectrogram(audio)
+# SoundTools.plot_spectogram(spectr)
 
 # spectr = SoundTools.shadow_spectr_segment(spectr)
 # SoundTools.plot_spectogram(spectr)
@@ -92,5 +109,23 @@ for i in range(10):
         os.rename(directory + filename, new_directory + filename)
 '''''''''
 
+'''''''''
+header = ['songname', 'label']
+data = []
 
+regex = re.compile(r'\d+')
 
+directory = df + "/validation_tracks/"
+for idx, filename in enumerate(os.listdir(directory)):
+    data.append(["songIndexed" + str(idx) + ".wav", int(regex.findall(filename)[0]) // 1000])
+    os.rename(directory + filename, df + "/val_indexed/" + "songIndexed" + str(idx) + ".wav")
+
+with open('val_labels.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+
+    # write the header
+    writer.writerow(header)
+
+    # write multiple rows
+    writer.writerows(data)
+'''''''''
