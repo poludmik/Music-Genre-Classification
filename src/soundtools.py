@@ -24,7 +24,7 @@ class SoundTools:
         if signal.shape[0] == new_num_channels:
             return sound
         if new_num_channels == 1:
-            return signal[0], sample_rate
+            return signal[0].view(1, signal[0].size(dim=0)), sample_rate
         if new_num_channels == 2:
             return torch.cat((signal, signal)), sample_rate
 
@@ -52,7 +52,6 @@ class SoundTools:
     def cut_or_pad(sound, t_sec):
         signal, sample_rate = sound
         samples_number = SoundTools.sec_to_sn(t_sec, sample_rate)
-
         if signal.size(dim=1) == samples_number:
             return sound
         elif signal.size(dim=1) > samples_number:

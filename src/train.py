@@ -135,31 +135,29 @@ class TrainingAssistant:
             # images = (images - torch.mean(images)) / torch.std(images)
 
             predictions = model(images)
-
             print(predictions.tolist())
+
             n = np.array(predictions.tolist())
             index = np.argmax(n)
-            print(index)
             print(f'Argmax index is: {index}, which is {TrainingAssistant.labels[index]}.')
 
 
 
 if __name__ == "__main__":
 
-    weights = None
-    # weights = "C:/Users/micha/homeworks/personal/Music/data/weights/weights_ep46_loss1.4809265176924244.pth"
+    # weights = None
+    weights = "C:/Users/micha/homeworks/personal/Music/data/weights_backup/weights_ep47_loss1.5606390545445104.pth"
     save_directionary = "C:/Users/micha/homeworks/personal/Music/data/weights"
 
+    TrainingAssistant.test_on_custom_audio(weights)
 
-    # TrainingAssistant.test_on_custom_audio(weights)
-
-    # """""""""
+    """""""""
     TrainingAssistant.train(weights_path=weights,
                             batch_size=16,
                             lr=0.001,
                             epochs=50,
                             save_dir=save_directionary)
-    # """""""""
+    """""""""
 
 
 
