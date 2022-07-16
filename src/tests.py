@@ -23,8 +23,8 @@ labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
 
 audio_file = df + '/three_second_samples/metal.00069.8.wav' # WAR PIGS!!!
 
-dataset = songsDS(train=False)
-track_spectr, track_label = dataset.__getitem__(323)
+dataset = songsDS(train=True)
+track_spectr, track_label = dataset.__getitem__(750)
 print(labels[track_label])
 SoundTools.plot_spectogram(track_spectr)
 
