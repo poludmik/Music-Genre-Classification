@@ -16,7 +16,7 @@ from dataset import songsDS
 import csv
 
 
-df = "C:/Users/micha/homeworks/personal/Music/Data"
+df = "C:/Users/micha/homeworks/personal/Music/data"
 
 labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
           5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
@@ -24,7 +24,7 @@ labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
 audio_file = df + '/three_second_samples/metal.00069.8.wav' # WAR PIGS!!!
 
 dataset = songsDS(train=False)
-track_spectr, track_label = dataset.__getitem__(322)
+track_spectr, track_label = dataset.__getitem__(323)
 print(labels[track_label])
 SoundTools.plot_spectogram(track_spectr)
 

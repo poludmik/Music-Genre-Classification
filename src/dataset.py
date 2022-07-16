@@ -10,7 +10,7 @@ from soundtools import SoundTools
 
 class songsDS(Dataset):
     def __init__(self, train=True):
-        self.data_folder = "C:/Users/micha/homeworks/personal/Music/Data"
+        self.data_folder = "C:/Users/micha/homeworks/personal/Music/data"
         self.train = train
 
         if self.train:
@@ -42,7 +42,7 @@ class songsDS(Dataset):
 
         audio_file = self.data_path + self.df.loc[idx, 'filename']
         class_id = self.df.loc[idx, 'label']
-        print(self.df.loc[idx, 'filename'], class_id)
+        # print(self.df.loc[idx, 'filename'], class_id)
 
         sig, sr = torchaudio.load(audio_file)
         sound = (sig, sr)
