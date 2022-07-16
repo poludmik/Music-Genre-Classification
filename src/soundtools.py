@@ -104,8 +104,8 @@ class SoundTools:
     def shadow_spectr_segment(spectrogram):
         # For data augmentation
         shadow_value = spectrogram.mean()
-        max_time_percent = 0.05
-        max_freq_percent = 0.1
+        max_time_percent = 0.1
+        max_freq_percent = 0.12
         spectrogram = transforms.TimeMasking(max_time_percent * spectrogram.size(dim=2))(spectrogram, shadow_value)
         spectrogram = transforms.FrequencyMasking(max_freq_percent * spectrogram.size(dim=1))(spectrogram, shadow_value)
         return spectrogram

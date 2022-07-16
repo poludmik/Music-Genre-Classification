@@ -27,14 +27,8 @@ class NeuralNetModel(nn.Module):
 
         self.ap = nn.AdaptiveAvgPool2d(output_size=1)
 
-        self.weight_init()
-
 
     def forward(self, x):
-
-        # maybe try standartisation? # TODO
-        # x = (x - mean) / std_dev
-
         # print(x.shape)
         x = self.conv_block1(x)
         # print(x.shape)
@@ -60,7 +54,6 @@ class NeuralNetModel(nn.Module):
         x = F.softmax(x, dim=1)
         # print(x.shape)
         return x
-
 
 
     def weight_init(self):
