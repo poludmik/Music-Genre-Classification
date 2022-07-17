@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 from soundtools import SoundTools
+from playsound import playsound
 from dataset import songsDS
 import csv
 
@@ -64,6 +65,11 @@ labels = pd.read_csv(df + "/features_3_sec.csv")
 
 # print(labels)
 # print(labels.iloc[3, 0], labels.iloc[3, 59])
+
+
+# playsound(df + '/train_indexed/a_disciple.wav')
+
+
 
 labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
           5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}

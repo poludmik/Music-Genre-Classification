@@ -88,24 +88,33 @@ class SoundTools:
     @staticmethod
     def spectrogram(sound, n_mels=90, n_fft=510, hop_len=None):
         sig, sr = sound
-        max_db = 80
+        max_db = 50
         spectrum = transforms.MelSpectrogram(sample_rate=sr, n_fft=n_fft, hop_length=hop_len, n_mels=n_mels)(sig)
         return transforms.AmplitudeToDB(top_db=max_db)(spectrum)
 
     @staticmethod
-    def plot_spectogram(spectogram):
+    def plot_spectogram(spectogram, songname):
         # will plot one channel spectogram
-        spectr = spectogram[0, :, :]
+        spectr = spectogram[0]
+        plt.title(songname)
         plt.imshow(spectr)
         plt.show()
 
     @staticmethod
     def shadow_spectr_segment(spectrogram):
         # For data augmentation
-        shadow_value = spectrogram.mean()
+        shadow_value = spectrogram.mean() + random.uniform(-1, 1)
         max_time_percent = 0.1
         max_freq_percent = 0.12
-        spectrogram = transforms.TimeMasking(max_time_percent * spectrogram.size(dim=2))(spectrogram, shadow_value)
-        spectrogram = transforms.FrequencyMasking(max_freq_percent * spectrogram.size(dim=1))(spectrogram, shadow_value)
+
+        number_of_time_shadows = 3
+        number_of_freq_shadows = 2
+
+        for i in range(number_of_time_shadows):
+            spectrogram = transforms.TimeMasking(max_time_percent * spectrogram.size(dim=2))(spectrogram, shadow_value)
+
+        for i in range(number_of_freq_shadows):
+            spectrogram = transforms.FrequencyMasking(max_freq_percent * spectrogram.size(dim=1))(spectrogram, shadow_value)
+
         return spectrogram
 

@@ -21,6 +21,7 @@ class TrainingAssistant:
     @staticmethod
     def plot_train_and_val_losses(tr_losses, vl_losses, epoch_number):
         epoch_list = list(range(0, epoch_number + 1))
+        plt.style.use('seaborn-whitegrid')
         plt.plot(epoch_list, tr_losses, '-b', label='train loss')
         plt.plot(epoch_list, vl_losses, '-r', label='val loss')
         plt.legend(loc="upper right")
@@ -28,6 +29,7 @@ class TrainingAssistant:
         plt.ylabel("Average CrossEntropyLoss")
         plt.suptitle("Train and Val loss progression")
         plt.show()
+        plt.rcParams.update(plt.rcParamsDefault)
 
     @staticmethod
     def train(weights_path=None, batch_size=16, lr=0.001, epochs=50, save_dir=None):
@@ -36,8 +38,6 @@ class TrainingAssistant:
 
         if not isinstance(save_dir, str):
             print("Directionary for saving weights is None.")
-
-        plt.style.use('seaborn-whitegrid')
 
         lr = lr
         batch_size = batch_size
@@ -48,7 +48,7 @@ class TrainingAssistant:
 
         # Create training and validation data loaders
         trainDL = torch.utils.data.DataLoader(trainDS, batch_size=batch_size, shuffle=True)
-        valDL = torch.utils.data.DataLoader(valDS, batch_size=batch_size, shuffle=True)
+        valDL = torch.utils.data.DataLoader(valDS, batch_size=batch_size, shuffle=False)
 
         model = NeuralNetModel()
         model.to(device)
@@ -109,8 +109,9 @@ class TrainingAssistant:
             TrainingAssistant.plot_train_and_val_losses(train_losses, val_losses, epoch_number=epoch)
 
             if min_loss > mean_val_loss and isinstance(save_dir, str):
-                torch.save(model.state_dict(), save_dir + "/weights_ep" + str(epoch) + "_loss" + str(mean_val_loss) + ".pth")
+                torch.save(model.state_dict(), save_dir + "/weights50dB_ep" + str(epoch) + "_loss" + str(mean_val_loss) + ".pth")
                 min_loss = mean_val_loss
+
 
     @staticmethod
     def test_on_custom_audio(weights_dir):
@@ -127,39 +128,38 @@ class TrainingAssistant:
         model.load_state_dict(torch.load(weights_dir))
 
         for data in testDL:
-
             images, _ = data
             images = images.to(device)
-
             # standartization
             # images = (images - torch.mean(images)) / torch.std(images)
 
             predictions = model(images)
-            print(predictions.tolist())
 
             n = np.array(predictions.tolist())
             index = np.argmax(n)
+
+            for i, probability in enumerate(predictions.tolist()[0]):
+                print("%9s = %.5f" % (TrainingAssistant.labels[i], probability))
+
             print(f'Argmax index is: {index}, which is {TrainingAssistant.labels[index]}.')
 
 
 
 if __name__ == "__main__":
 
-    # weights = None
-    weights = "C:/Users/micha/homeworks/personal/Music/data/weights_backup/weights_ep47_loss1.5606390545445104.pth"
-    save_directionary = "C:/Users/micha/homeworks/personal/Music/data/weights"
-
+    weights = "C:/Users/micha/homeworks/personal/Music/data/weights_backup/weights50dB_ep68_loss1.7745775407360447.pth"
     TrainingAssistant.test_on_custom_audio(weights)
 
     """""""""
+    weights = None
+    save_directionary = "C:/Users/micha/homeworks/personal/Music/data/weights"
+
     TrainingAssistant.train(weights_path=weights,
                             batch_size=16,
                             lr=0.001,
-                            epochs=50,
+                            epochs=70,
                             save_dir=save_directionary)
     """""""""
-
-
 
 
 
