@@ -27,7 +27,7 @@ audio_file = df + '/three_second_samples/metal.00069.8.wav' # WAR PIGS!!!
 dataset = songsDS(train=True)
 track_spectr, track_label = dataset.__getitem__(750)
 print(labels[track_label])
-SoundTools.plot_spectogram(track_spectr)
+SoundTools.plot_spectogram(track_spectr, "kek")
 
 
 # train_csv = df + "/train_labels.csv"
