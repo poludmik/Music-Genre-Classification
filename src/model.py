@@ -22,7 +22,7 @@ class NeuralNetModel(nn.Module):
         self.conv_block5 = Conv_Block_and_MaxPool(128, 256, (3, 3), padding=1)
         # self.conv_block6 = Conv_Block_and_MaxPool(256, 512, (3, 3), padding=1)
 
-        self.linear1 = nn.Linear(256, 10, bias=True)
+        self.linear1 = nn.Linear(256, 5, bias=True)
         self.linear2 = nn.Linear(4096, 10, bias=True)
 
         self.ap = nn.AdaptiveAvgPool2d(output_size=1)

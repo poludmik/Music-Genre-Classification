@@ -31,7 +31,7 @@ class songsDS(Dataset):
             self.length = 5750
 
         self.duration_sec = 3
-        self.sr = 22050
+        self.sr = 44100
         self.channel = 1
         self.max_shift_sec = 1
 
@@ -54,7 +54,7 @@ class songsDS(Dataset):
             songname = filenames[0]
             print(songname)
         else:
-            audio_file = self.data_path + self.df.loc[idx, 'filename']
+            audio_file = self.data_path + self.df.loc[idx, 'songname']
             class_id = self.df.loc[idx, 'label']
             sig, sr = torchaudio.load(audio_file)
 
@@ -70,7 +70,7 @@ class songsDS(Dataset):
 
         spectrum = SoundTools.spectrogram(sound)
 
-        if random.randint(0, 10) > 2 and not (self.test or self.validate):
+        if random.randint(0, 10) > 7 and not (self.test or self.validate):
             spectrum = SoundTools.shadow_spectr_segment(spectrum)
 
         if self.test:

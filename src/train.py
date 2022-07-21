@@ -12,8 +12,10 @@ import matplotlib.pyplot as plt
 
 class TrainingAssistant:
 
-    labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
-              5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
+    # label_dictionary = {0: "blues", 1: "classical", 2: "country", 3: "disco",
+    #       4: "hiphop", 5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
+
+    label_dictionary = {0: "classical", 1: "pop", 2: "rap", 3: "lofi", 4: "metal"}
 
     def __init__(self):
         pass
@@ -80,6 +82,7 @@ class TrainingAssistant:
 
                 predictions = model(images)
 
+                # print(predictions, labels)
                 loss = loss_criterium(predictions, labels)
 
                 sum_of_train_losses += loss.item()
@@ -139,27 +142,27 @@ class TrainingAssistant:
             index = np.argmax(n)
 
             for i, probability in enumerate(predictions.tolist()[0]):
-                print("%9s = %.5f" % (TrainingAssistant.labels[i], probability))
+                print("%9s = %.5f" % (TrainingAssistant.label_dictionary[i], probability))
 
-            print(f'Argmax index is: {index}, which is {TrainingAssistant.labels[index]}.')
+            print(f'Argmax index is: {index}, which is {TrainingAssistant.label_dictionary[index]}.')
 
 
 
 if __name__ == "__main__":
-    """""""""
-    weights = "C:/Users/micha/homeworks/personal/Music/data/weights_backup/weights50dB_ep68_loss1.7745775407360447.pth"
+
+    weights = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights/weights_myDataset_Ep68_loss1.1222665111223857.pth"
     TrainingAssistant.test_on_custom_audio(weights)
     """""""""
 
     weights = None
-    save_directionary = "C:/Users/micha/homeworks/personal/Music/data/weights"
+    save_directionary = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights"
 
     TrainingAssistant.train(weights_path=weights,
                             batch_size=16,
                             lr=0.001,
                             epochs=70,
                             save_dir=save_directionary)
-
+"""""""""
 
 
 

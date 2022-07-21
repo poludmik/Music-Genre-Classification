@@ -86,7 +86,7 @@ class SoundTools:
         return sig, sr
 
     @staticmethod
-    def spectrogram(sound, n_mels=90, n_fft=510, hop_len=None):
+    def spectrogram(sound, n_mels=90, n_fft=800, hop_len=None):
         sig, sr = sound
         max_db = 50
         spectrum = transforms.MelSpectrogram(sample_rate=sr, n_fft=n_fft, hop_length=hop_len, n_mels=n_mels)(sig)
@@ -104,8 +104,8 @@ class SoundTools:
     def shadow_spectr_segment(spectrogram):
         # For data augmentation
         shadow_value = spectrogram.mean() + random.uniform(-1, 1)
-        max_time_percent = 0.1
-        max_freq_percent = 0.12
+        max_time_percent = 0.08
+        max_freq_percent = 0.08
 
         number_of_time_shadows = 3
         number_of_freq_shadows = 2

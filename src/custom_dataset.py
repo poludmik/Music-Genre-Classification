@@ -76,13 +76,15 @@ class songsManager:
             if i == 0:
                 continue
 
+            name = "track_" + str(i) + ".wav"
+
             if i in nums:
                 print(i, row[0])
-                os.rename(os.path.join(all_folder, row[0]), os.path.join(val_folder, row[0]))
-                data_val.append([row[0], row[1]])
+                os.rename(os.path.join(all_folder, row[0]), os.path.join(val_folder, name))
+                data_val.append([name, row[1]])
             else:
-                os.rename(os.path.join(all_folder, row[0]), os.path.join(train_folder, row[0]))
-                data_train.append([row[0], row[1]])
+                os.rename(os.path.join(all_folder, row[0]), os.path.join(train_folder, name))
+                data_train.append([name, row[1]])
 
         with open(csv_train, 'w', newline='') as f_train, open(csv_val, 'w', newline='') as f_val:
             writer = csv.writer(f_train)

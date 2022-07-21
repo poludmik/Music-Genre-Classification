@@ -17,15 +17,17 @@ from dataset import songsDS
 import csv
 
 
-df = "C:/Users/micha/homeworks/personal/Music/data"
+df = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_training_folder/"
 
-labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
-          5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
+# labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
+#           5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
 
-audio_file = df + '/three_second_samples/metal.00069.8.wav' # WAR PIGS!!!
+labels = {0: "classical", 1: "pop", 2: "rap", 3: "lofi", 4:"metal"}
+
+audio_file = df + "track_0.wav"
 
 dataset = songsDS(train=True)
-track_spectr, track_label = dataset.__getitem__(750)
+track_spectr, track_label = dataset.__getitem__(10)
 print(labels[track_label])
 SoundTools.plot_spectogram(track_spectr, "kek")
 
@@ -61,7 +63,7 @@ SoundTools.plot_spectogram(track_spectr, "kek")
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #print(device)
 
-labels = pd.read_csv(df + "/features_3_sec.csv")
+# labels = pd.read_csv(df + "/features_3_sec.csv")
 
 # print(labels)
 # print(labels.iloc[3, 0], labels.iloc[3, 59])
@@ -71,11 +73,11 @@ labels = pd.read_csv(df + "/features_3_sec.csv")
 
 
 
-labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
-          5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
+# labels = {0: "blues", 1: "classical", 2: "country", 3: "disco", 4: "hiphop",
+#           5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
 
 
-subfolders = [f.path for f in os.scandir(df + '/genres_original') if f.is_dir()]
+# subfolders = [f.path for f in os.scandir(df + '/genres_original') if f.is_dir()]
 
 idx_overall = 0
 chunk_length_ms = 3000
