@@ -22,13 +22,13 @@ class songsDS(Dataset):
         elif validate:
             print("Validation mode.")
             self.data_path = self.data_folder + "/custom_validation_folder/"
-            self.df = pd.read_csv(self.data_folder + "/custom_all_3s_labels.csv")
-            self.length = 500
+            self.df = pd.read_csv(self.data_folder + "/validation_labels.csv")
+            self.length = 250
         else:
             print("Training mode.")
-            self.data_path = self.data_folder + "/custom_all_3s_tracks_train/"
-            self.df = pd.read_csv(self.data_folder + "/custom_all_3s_labels.csv")
-            self.length = 9500
+            self.data_path = self.data_folder + "/custom_training_folder/"
+            self.df = pd.read_csv(self.data_folder + "/training_labels.csv")
+            self.length = 5750
 
         self.duration_sec = 3
         self.sr = 22050

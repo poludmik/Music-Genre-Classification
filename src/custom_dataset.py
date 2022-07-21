@@ -62,16 +62,33 @@ class songsManager:
             writer.writerows(csv_rows)
 
     @staticmethod
-    def extract_validation_data(from_folder, to_folder, csv_file):
+    def separate_to_train_and_validation_data(all_folder, train_folder, val_folder, csv_file, csv_train, csv_val):
         nums = random.sample(range(5999), 250)
+
         the_file = open(csv_file, 'r')
         reader = csv.reader(the_file)
+
+        data_val = [["songname", "label"]]
+        data_train = [["songname", "label"]]
+
         for i, row in enumerate(reader):
+
+            if i == 0:
+                continue
+
             if i in nums:
                 print(i, row[0])
-                os.rename(os.path.join(from_folder, row[0]), os.path.join(to_folder, row[0]))
+                os.rename(os.path.join(all_folder, row[0]), os.path.join(val_folder, row[0]))
+                data_val.append([row[0], row[1]])
+            else:
+                os.rename(os.path.join(all_folder, row[0]), os.path.join(train_folder, row[0]))
+                data_train.append([row[0], row[1]])
 
-
+        with open(csv_train, 'w', newline='') as f_train, open(csv_val, 'w', newline='') as f_val:
+            writer = csv.writer(f_train)
+            writer.writerows(data_train)
+            writer = csv.writer(f_val)
+            writer.writerows(data_val)
 
 
 if __name__ == "__main__":
@@ -95,11 +112,17 @@ if __name__ == "__main__":
     songsManager.cut_30s_to_3s_and_store_with_labels(start_folder, label, end_folder, csv_doc)
     """""""""
 
+    # Separate to val and train data
+    """""""""
     csv_doc = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_all_3s_labels.csv"
     folder_of_all = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_all_3s_tracks_train"
+    folder_of_training = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_training_folder"
     folder_of_validation = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_validation_folder"
-    songsManager.extract_validation_data(folder_of_all, folder_of_validation, csv_doc)
+    csv_doc_train = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/training_labels.csv"
+    csv_doc_val = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/validation_labels.csv"
 
+    songsManager.separate_to_train_and_validation_data(folder_of_all, folder_of_training, folder_of_validation, csv_doc, csv_doc_train, csv_doc_val)
+    """""""""
 
 
 
