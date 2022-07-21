@@ -109,7 +109,7 @@ class TrainingAssistant:
             TrainingAssistant.plot_train_and_val_losses(train_losses, val_losses, epoch_number=epoch)
 
             if min_loss > mean_val_loss and isinstance(save_dir, str):
-                torch.save(model.state_dict(), save_dir + "/weights50dB_ep" + str(epoch) + "_loss" + str(mean_val_loss) + ".pth")
+                torch.save(model.state_dict(), save_dir + "/weights_myDataset_Ep" + str(epoch) + "_loss" + str(mean_val_loss) + ".pth")
                 min_loss = mean_val_loss
 
 
@@ -146,11 +146,11 @@ class TrainingAssistant:
 
 
 if __name__ == "__main__":
-
+    """""""""
     weights = "C:/Users/micha/homeworks/personal/Music/data/weights_backup/weights50dB_ep68_loss1.7745775407360447.pth"
     TrainingAssistant.test_on_custom_audio(weights)
-
     """""""""
+
     weights = None
     save_directionary = "C:/Users/micha/homeworks/personal/Music/data/weights"
 
@@ -159,7 +159,7 @@ if __name__ == "__main__":
                             lr=0.001,
                             epochs=70,
                             save_dir=save_directionary)
-    """""""""
+
 
 
 

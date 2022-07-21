@@ -1,7 +1,10 @@
 import os
+import random
+
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 import csv
+import os
 
 
 class songsManager:
@@ -30,7 +33,7 @@ class songsManager:
 
 
     @staticmethod
-    def cut_30s_to_3s_and_store_with_labels(from_folder, label, to_folder, csv_file):
+    def cut_30s_to_3s_and_store_with_labels(from_folder, lbl, to_folder, csv_file):
 
         chunk_length_ms = 3000
 
@@ -48,15 +51,27 @@ class songsManager:
                     print("Chunks:", len(chunks), filename)
 
                 for i, chunk in enumerate(chunks):
-                    track_name = str(label) + "_" + filename[:-4] + "_" + str(i) + ".wav"
+                    track_name = str(lbl) + "_" + filename[:-4] + "_" + str(i) + ".wav"
                     chunk_name = to_folder + "/" + track_name
                     chunk.export(chunk_name, format="wav")
-                    csv_rows.append([track_name, str(label)])
+                    csv_rows.append([track_name, str(lbl)])
 
 
         with open(csv_file, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(csv_rows)
+
+    @staticmethod
+    def extract_validation_data(from_folder, to_folder, csv_file):
+        nums = random.sample(range(5999), 250)
+        the_file = open(csv_file, 'r')
+        reader = csv.reader(the_file)
+        for i, row in enumerate(reader):
+            if i in nums:
+                print(i, row[0])
+                os.rename(os.path.join(from_folder, row[0]), os.path.join(to_folder, row[0]))
+
+
 
 
 if __name__ == "__main__":
@@ -71,23 +86,19 @@ if __name__ == "__main__":
     """""""""
 
     # Split to 3s tracks and store them with labels
+    """""""""
     label = 3
     csv_doc = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/labels_" + labels[label] + ".csv"
     start_folder = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/downloaded_songs/" + labels[label] +"_30s"
     end_folder = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/downloaded_songs/" + labels[label] +"_3s"
 
     songsManager.cut_30s_to_3s_and_store_with_labels(start_folder, label, end_folder, csv_doc)
+    """""""""
 
-    # header = ["songname", "label"]
-    # data = [["hammer_smashed_face", "500"], ["yellow_submarine", "700"]]
-    # with open(csv_doc, 'w', newline='') as f:
-    #     writer = csv.writer(f)
-    #
-    #     # write the header
-    #     writer.writerow(header)
-    #
-    #     # write multiple rows
-    #     writer.writerows(data)
+    csv_doc = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_all_3s_labels.csv"
+    folder_of_all = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_all_3s_tracks_train"
+    folder_of_validation = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_validation_folder"
+    songsManager.extract_validation_data(folder_of_all, folder_of_validation, csv_doc)
 
 
 

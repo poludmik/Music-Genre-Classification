@@ -10,7 +10,7 @@ from soundtools import SoundTools
 
 class songsDS(Dataset):
     def __init__(self, train=False, validate=False, test=False):
-        self.data_folder = "C:/Users/micha/homeworks/personal/Music/data"
+        self.data_folder = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset"
         self.train = train
         self.validate = validate
         self.test = test
@@ -21,15 +21,14 @@ class songsDS(Dataset):
             self.length = 1
         elif validate:
             print("Validation mode.")
-            self.data_path = self.data_folder + "/val_indexed/"
-            self.df = pd.read_csv(self.data_folder + "/val_labels.csv")
+            self.data_path = self.data_folder + "/custom_validation_folder/"
+            self.df = pd.read_csv(self.data_folder + "/custom_all_3s_labels.csv")
             self.length = 500
         else:
             print("Training mode.")
-            self.data_path = self.data_folder + "/train_indexed/"
-            self.df = pd.read_csv(self.data_folder + "/train_labels.csv")
+            self.data_path = self.data_folder + "/custom_all_3s_tracks_train/"
+            self.df = pd.read_csv(self.data_folder + "/custom_all_3s_labels.csv")
             self.length = 9500
-
 
         self.duration_sec = 3
         self.sr = 22050
