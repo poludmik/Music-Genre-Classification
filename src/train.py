@@ -1,10 +1,11 @@
 import numpy as np
-
+import seaborn as sn
 from soundtools import SoundTools
 from dataset import songsDS
 from model import NeuralNetModel
 import torch
 import torch.nn as nn
+import pandas as pd
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
@@ -30,6 +31,19 @@ class TrainingAssistant:
         plt.xlabel("Epoch number")
         plt.ylabel("Average CrossEntropyLoss")
         plt.suptitle("Train and Val loss progression")
+        plt.show()
+        plt.rcParams.update(plt.rcParamsDefault)
+
+    @staticmethod
+    def plot_confusion_matrix(conf_matrix):
+        df_cm = pd.DataFrame(conf_matrix, index=[i for i in "01234"],
+                             columns=[i for i in "01234"])
+        fig = plt.figure(figsize=(10, 7))
+        fig.suptitle("Confusion matrix of test songs.", fontsize=20)
+        plt.title(r"0: classical, 1: pop, 2: rap, 3: lofi, 4: metal", fontsize=15)
+        sn.heatmap(df_cm, annot=True, cmap="GnBu")
+        plt.xlabel("Predictions", fontsize=18)
+        plt.ylabel("True genres", fontsize=18)
         plt.show()
         plt.rcParams.update(plt.rcParamsDefault)
 
@@ -66,7 +80,10 @@ class TrainingAssistant:
 
         min_loss = 666
 
+
         for epoch in range(epochs):
+
+            confusion_matrix = [([0] * 5) for i in range(5)]
 
             sum_of_train_losses = sum_of_val_losses = 0
 
@@ -112,8 +129,10 @@ class TrainingAssistant:
             TrainingAssistant.plot_train_and_val_losses(train_losses, val_losses, epoch_number=epoch)
 
             if min_loss > mean_val_loss and isinstance(save_dir, str):
-                torch.save(model.state_dict(), save_dir + "/weights_myDataset_Ep" + str(epoch) + "_loss" + str(mean_val_loss) + ".pth")
+                torch.save(model.state_dict(), save_dir + "/weights_myDataset_test_Ep" + str(epoch) + "_loss" + str(mean_val_loss) + ".pth")
                 min_loss = mean_val_loss
+
+            TrainingAssistant.plot_confusion_matrix(confusion_matrix)
 
 
     @staticmethod
@@ -125,18 +144,23 @@ class TrainingAssistant:
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         testDS = songsDS(test=True)
-        testDL = torch.utils.data.DataLoader(testDS, batch_size=1, shuffle=False)
+        testDL = torch.utils.data.DataLoader(testDS, batch_size=1, shuffle=True)
         model = NeuralNetModel()
         model.to(device)
         model.load_state_dict(torch.load(weights_dir))
 
-        for data in testDL:
-            images, _ = data
-            images = images.to(device)
-            # standartization
-            # images = (images - torch.mean(images)) / torch.std(images)
+        confusion_matrix = [([0] * 5) for i in range(5)]
 
-            predictions = model(images)
+        for data in testDL:
+            image, label = data
+            image = image.to(device)
+
+            predictions = model(image)
+
+            for i, prediction in enumerate(predictions):
+                n = np.array(prediction.tolist())
+                index = np.argmax(n)
+                confusion_matrix[int(torch.nan_to_num(label)[0])][index] += 1
 
             n = np.array(predictions.tolist())
             index = np.argmax(n)
@@ -144,7 +168,9 @@ class TrainingAssistant:
             for i, probability in enumerate(predictions.tolist()[0]):
                 print("%9s = %.5f" % (TrainingAssistant.label_dictionary[i], probability))
 
-            print(f'Argmax index is: {index}, which is {TrainingAssistant.label_dictionary[index]}.')
+            print(f'Argmax index is: {index}, which is {TrainingAssistant.label_dictionary[index]}.\n')
+
+        TrainingAssistant.plot_confusion_matrix(confusion_matrix)
 
 
 
@@ -152,9 +178,10 @@ if __name__ == "__main__":
 
     weights = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights/weights_myDataset_Ep68_loss1.1222665111223857.pth"
     TrainingAssistant.test_on_custom_audio(weights)
-    """""""""
 
-    weights = None
+    """""""""
+    # weights = None
+    weights = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights/weights_myDataset_Ep68_loss1.1222665111223857.pth"
     save_directionary = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights"
 
     TrainingAssistant.train(weights_path=weights,
@@ -162,7 +189,7 @@ if __name__ == "__main__":
                             lr=0.001,
                             epochs=70,
                             save_dir=save_directionary)
-"""""""""
+    """""""""
 
 
 

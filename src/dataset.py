@@ -18,7 +18,8 @@ class songsDS(Dataset):
         if test:
             print("Testing mode.")
             self.data_path = self.data_folder + "/testing_folder/"
-            self.length = 1
+            self.df = pd.read_csv(self.data_folder + "/testing_labels.csv")
+            self.length = 30
         elif validate:
             print("Validation mode.")
             self.data_path = self.data_folder + "/custom_validation_folder/"
@@ -47,16 +48,9 @@ class songsDS(Dataset):
 
         songname = ""
 
-        if self.test:
-            filenames = os.listdir(self.data_path)
-            sig, sr = torchaudio.load(self.data_path + "/" + filenames[0])
-            class_id = -1
-            songname = filenames[0]
-            print(songname)
-        else:
-            audio_file = self.data_path + self.df.loc[idx, 'songname']
-            class_id = self.df.loc[idx, 'label']
-            sig, sr = torchaudio.load(audio_file)
+        audio_file = self.data_path + self.df.loc[idx, 'songname']
+        class_id = self.df.loc[idx, 'label']
+        sig, sr = torchaudio.load(audio_file)
 
         sound = (sig, sr)
 
@@ -74,6 +68,7 @@ class songsDS(Dataset):
             spectrum = SoundTools.shadow_spectr_segment(spectrum)
 
         if self.test:
-            SoundTools.plot_spectogram(spectrum, songname)
+            print(self.df.loc[idx, 'songname'])
+        #     SoundTools.plot_spectogram(spectrum, songname)
 
         return spectrum, class_id
