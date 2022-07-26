@@ -1,28 +1,32 @@
 import numpy as np
 import seaborn as sn
-from soundtools import SoundTools
 from dataset import songsDS
 from model import NeuralNetModel
 import torch
 import torch.nn as nn
 import pandas as pd
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
 
 
 class TrainingAssistant:
 
+    # Labels for GTZAN dateset:
     # label_dictionary = {0: "blues", 1: "classical", 2: "country", 3: "disco",
     #       4: "hiphop", 5: "jazz", 6: "metal", 7: "pop", 8: "reggae", 9: "rock"}
 
+    # Labels for my custom dataset:
     label_dictionary = {0: "classical", 1: "pop", 2: "rap", 3: "lofi", 4: "metal"}
-
-    def __init__(self):
-        pass
 
     @staticmethod
     def plot_train_and_val_losses(tr_losses, vl_losses, epoch_number):
+        """
+        Method to show the loss progression during epochs using matplotlib.
+
+        :param list tr_losses: A list of float losses obtained from training data during training.
+        :param list vl_losses: A list of float losses obtained from validation data during training.
+        :param int epoch_number: Current number of epochs.
+        """
         epoch_list = list(range(0, epoch_number + 1))
         plt.style.use('seaborn-whitegrid')
         plt.plot(epoch_list, tr_losses, '-b', label='train loss')
@@ -36,6 +40,11 @@ class TrainingAssistant:
 
     @staticmethod
     def plot_confusion_matrix(conf_matrix):
+        """
+        Method to show the obtained confusion matrix using matplotlib.
+
+        :param conf_matrix: A 2D confusion list with prediction axis and label axis.
+        """
         df_cm = pd.DataFrame(conf_matrix, index=[i for i in "01234"],
                              columns=[i for i in "01234"])
         fig = plt.figure(figsize=(10, 7))
@@ -49,6 +58,16 @@ class TrainingAssistant:
 
     @staticmethod
     def train(weights_path=None, batch_size=16, lr=0.001, epochs=50, save_dir=None):
+        """
+        Main training loop, here NN improves provided weights or creates new ones.
+        Stores achieved weights into save_dir, if provided.
+
+        :param str weights_path: Absolute path to weights or None to start new learning.
+        :param int batch_size: Batch size to be used in forward pass.
+        :param float lr: Learning rate.
+        :param int epochs: Number of epochs to be executed.
+        :param str save_dir: Absolute path determining where to store achieved weights, None = do not store.
+        """
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # print(device)
 
@@ -137,7 +156,13 @@ class TrainingAssistant:
 
     @staticmethod
     def test_on_custom_audio(weights_dir):
+        """
+        Method does forward pass of all the audio tracks in the testing folder, which is specified in dataset.py
+        It outputs the predictions about each track and creates a confusion matrix based on a "testing_labels.csv".
+        Method is used to test the neural network weights which were obtained during the training.
 
+        :param str weights_dir: Absolute path to weights that need to be tested.
+        """
         if weights_dir is None:
             print("No weights path given.")
             return
@@ -179,7 +204,7 @@ if __name__ == "__main__":
     weights = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights/weights_myDataset_Ep68_loss1.1222665111223857.pth"
     TrainingAssistant.test_on_custom_audio(weights)
 
-    """""""""
+    """
     # weights = None
     weights = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights/weights_myDataset_Ep68_loss1.1222665111223857.pth"
     save_directionary = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/weights"
@@ -189,7 +214,7 @@ if __name__ == "__main__":
                             lr=0.001,
                             epochs=70,
                             save_dir=save_directionary)
-    """""""""
+    """
 
 
 

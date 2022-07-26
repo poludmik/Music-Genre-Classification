@@ -52,5 +52,8 @@ I visualized classification of 30 'never seen' test songs with a confusion matri
 
 <img src="README/confusion_matrix.png">
 
+>To test the achieved results by yourself, drop desired tracks in .wav format to a testing_folder and run the train.py script.
+>By default the program will take the first 3 seconds of each audio; you can prepare your own 3s tracks which represent i.e. the middle of a song.
+
 And to end this README here is a loss progression during the training and a charmingly beautiful spectrogram I witnessed:
 <img src="README/losses.png">

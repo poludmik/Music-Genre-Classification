@@ -1,14 +1,14 @@
-import os
 import random
 import pandas as pd
-from torchvision import datasets, transforms
 from torch.utils.data import Dataset
 import torchaudio
-from torchaudio import transforms
 from soundtools import SoundTools
 
 
 class songsDS(Dataset):
+    """
+    Subclass of Dataset class implementing a tool for DataLoader to get the data items one at a time.
+    """
     def __init__(self, train=False, validate=False, test=False):
         self.data_folder = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset"
         self.train = train
@@ -38,15 +38,22 @@ class songsDS(Dataset):
 
 
     def __len__(self):
+        """ Return number of items in a dataset.
+
+        :return: Number of items in a dataset.
+        """
         return self.length
 
-    # Getting idx'th sample from dataset
     def __getitem__(self, idx):
+        """
+        Getting idx'th sample from dataset.
+
+        :param idx: Index of an item from dataset
+        :return: Spectrogram to be used in learning.
+        """
 
         if idx >= self.length:
             print("Index is bigger than songs amount, error.")
-
-        songname = ""
 
         audio_file = self.data_path + self.df.loc[idx, 'songname']
         class_id = self.df.loc[idx, 'label']

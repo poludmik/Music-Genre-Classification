@@ -1,6 +1,4 @@
-import os
 import random
-
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 import csv
@@ -8,13 +6,20 @@ import os
 
 
 class songsManager:
+    """
+    Contains methods that were used to create a custom dataset.
+    """
 
     @staticmethod
     def add_songs_from_folder_to_dataset(foldername, to_folder):
-        # take all songs from a folder
-        # convert them to .wav and to a mono channeling
-        # cut 30 second slice from the middle and store it to the to_folder
+        """
+        Take all songs from a folder.
+        Convert them to .wav and to a mono channeling.
+        Cut 30 second slice from the middle and store it to the to_folder.
 
+        :param str foldername: Absolute path to a folder.
+        :param str to_folder: Absolute path to a store folder.
+        """
         for filename in os.listdir(foldername):
             f = os.path.join(foldername, filename)
             if os.path.isfile(f):
@@ -34,7 +39,14 @@ class songsManager:
 
     @staticmethod
     def cut_30s_to_3s_and_store_with_labels(from_folder, lbl, to_folder, csv_file):
+        """
+        Cut 30-second tracks to 3 seconds and store them with corresponding labels.
 
+        :param str from_folder: Absolute path to a folder.
+        :param int lbl: Current label.
+        :param str to_folder: Absolute path to a store folder.
+        :param str csv_file: Absolute path to a csv file with labels.
+        """
         chunk_length_ms = 3000
 
         with open(csv_file, newline='') as f:
@@ -63,6 +75,16 @@ class songsManager:
 
     @staticmethod
     def separate_to_train_and_validation_data(all_folder, train_folder, val_folder, csv_file, csv_train, csv_val):
+        """
+        Randomly select tracks for validation and separate them from training tracks.
+
+        :param str all_folder: Absolute path to a common folder.
+        :param str train_folder: Absolute path to a training folder.
+        :param str val_folder: Absolute path to a validation folder.
+        :param str csv_file: Absolute path to a common csv file.
+        :param str csv_train: Absolute path to a csv training file.
+        :param str csv_val: Absolute path to a csv validation file.
+        """
         nums = random.sample(range(5999), 250)
 
         the_file = open(csv_file, 'r')
@@ -98,24 +120,24 @@ if __name__ == "__main__":
     labels = {0: "classical", 1: "pop", 2: "rap", 3: "lofi", 4:"metal"}
 
     # Trim to 30 seconds
-    """""""""
+    """
     # folder_classical = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/downloaded_songs/lofi"
     # end_folder = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/downloaded_songs/lofi_30s"
     # songsManager.add_songs_from_folder_to_dataset(folder_classical, end_folder)
-    """""""""
+    """
 
     # Split to 3s tracks and store them with labels
-    """""""""
+    """
     label = 3
     csv_doc = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/labels_" + labels[label] + ".csv"
     start_folder = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/downloaded_songs/" + labels[label] +"_30s"
     end_folder = "C:/Users/micha/homeworks/personal/Music/data/mishas_dataset/downloaded_songs/" + labels[label] +"_3s"
 
     songsManager.cut_30s_to_3s_and_store_with_labels(start_folder, label, end_folder, csv_doc)
-    """""""""
+    """
 
     # Separate to val and train data
-    """""""""
+    """
     csv_doc = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_all_3s_labels.csv"
     folder_of_all = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_all_3s_tracks_train"
     folder_of_training = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/custom_training_folder"
@@ -124,12 +146,4 @@ if __name__ == "__main__":
     csv_doc_val = "C:/Users/micha/homeworks/personal/Music/data/mishas_custom_dataset/validation_labels.csv"
 
     songsManager.separate_to_train_and_validation_data(folder_of_all, folder_of_training, folder_of_validation, csv_doc, csv_doc_train, csv_doc_val)
-    """""""""
-
-
-
-
-
-
-
-
+    """

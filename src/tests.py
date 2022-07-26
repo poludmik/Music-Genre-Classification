@@ -1,3 +1,7 @@
+"""
+A script that was used to test stuff.
+"""
+
 import math, random
 import os
 import re

@@ -15,11 +15,24 @@ class SoundTools:
 
     @staticmethod
     def open(sound_file):
+        """
+        Opens the audio file.
+
+        :param str sound_file: Absolute path to a sound file.
+        :return: Tuple (signal, sample_rate), where signal is a torch tensor.
+        """
         signal, sample_rate = torchaudio.load(sound_file)
         return signal, sample_rate
 
     @staticmethod
     def rechannel(sound, new_num_channels):
+        """
+        Change the number of channels in an audio.
+
+        :param tuple sound: An audio signal.
+        :param int new_num_channels: A new number of audio channels.
+        :return: New sound tuple (new_signal, sample_rate), where signal is a torch tensor.
+        """
         (signal, sample_rate) = sound
         if signal.shape[0] == new_num_channels:
             return sound
@@ -30,6 +43,13 @@ class SoundTools:
 
     @staticmethod
     def resample(sound, new_sample_rate):
+        """
+        Change number of samples per seconds in sound.
+
+        :param tuple sound: An audio signal.
+        :param int new_sample_rate: Sample rate will be changed to this number.
+        :return: New sound tuple (signal, new_sample_rate), where signal is a torch tensor.
+        """
         signal, sample_rate = sound
         if sample_rate == new_sample_rate:
             return sound
@@ -42,14 +62,35 @@ class SoundTools:
 
     @staticmethod
     def sec_to_sn(t_sec, sr):
+        """
+        Convert time in seconds to number of samples using sample rate.
+
+        :param float t_sec: Time in seconds.
+        :param int sr: Sample rate.
+        :return: Number of samples during t_sec.
+        """
         return math.floor(t_sec * sr)
 
     @staticmethod
     def sn_to_sec(sn, sr):
+        """
+        Convert number of samples to time in seconds using sample rate.
+
+        :param int sn: Number of samples.
+        :param int sr: Sample rate.
+        :return: Time in seconds.
+        """
         return math.ceil((sn / sr))
 
     @staticmethod
     def cut_or_pad(sound, t_sec):
+        """
+        Pad with zeros or cut the given sound, so that it is t_sec long.
+
+        :param tuple sound: A sound tuple (signal_tensor, sample_rate).
+        :param int t_sec: Desired length in seconds.
+        :return: Cut or padded sound tuple (new_signal_tensor, sample_rate).
+        """
         signal, sample_rate = sound
         samples_number = SoundTools.sec_to_sn(t_sec, sample_rate)
         if signal.size(dim=1) == samples_number:
@@ -71,6 +112,11 @@ class SoundTools:
 
     @staticmethod
     def plot_sound(sound):
+        """
+        Shows the sound in time domain using matplotlib.
+
+        :param tuple sound: A sound (signal_tensor, sample_rate).
+        """
         sig, sr = sound
         time_in_s = SoundTools.sn_to_sec(sig.size(dim=1), sr)
         t = np.linspace(0, time_in_s, sr * time_in_s, endpoint=False)
@@ -79,6 +125,13 @@ class SoundTools:
 
     @staticmethod
     def random_shift(sound, max_seconds):
+        """
+        Used for data augmentation. Shift signal by a random time.
+
+        :param tuple sound: A sound (signal_tensor, sample_rate).
+        :param float max_seconds: Max time shift.
+        :return: Shifted sound (new_signal_tensor, sample_rate).
+        """
         sig, sr = sound
         seconds_to_shift = random.uniform(-max_seconds, max_seconds)
         sample_num_to_shift = SoundTools.sec_to_sn(seconds_to_shift, sr)
@@ -87,6 +140,15 @@ class SoundTools:
 
     @staticmethod
     def spectrogram(sound, n_mels=90, n_fft=800, hop_len=None):
+        """
+        Extracts the spectrogram out of a sound.
+
+        :param tuple sound: A sound (signal_tensor, sample_rate).
+        :param int n_mels: Number of Mel levels.
+        :param int n_fft: Number of FFT per frame.
+        :param int hop_len: Jump between frames.
+        :return: Mel spectrogram in dB.
+        """
         sig, sr = sound
         max_db = 50
         spectrum = transforms.MelSpectrogram(sample_rate=sr, n_fft=n_fft, hop_length=hop_len, n_mels=n_mels)(sig)
@@ -94,6 +156,12 @@ class SoundTools:
 
     @staticmethod
     def plot_spectogram(spectogram, songname):
+        """
+        Plots spectrogram with matplotlib.
+
+        :param spectogram: Spectrogram to plot.
+        :param str songname: A songname to be written above spectrogram image.
+        """
         # will plot one channel spectogram
         spectr = spectogram[0]
         plt.title(songname)
@@ -102,6 +170,12 @@ class SoundTools:
 
     @staticmethod
     def shadow_spectr_segment(spectrogram):
+        """
+        Used for data augmentation.
+
+        :param spectrogram: A spectrogram to be changed.
+        :return: Spectrogram with shaded parts.
+        """
         # For data augmentation
         shadow_value = spectrogram.mean() + random.uniform(-1, 1)
         max_time_percent = 0.08
