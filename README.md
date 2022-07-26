@@ -35,12 +35,12 @@ An accurate visualization of a used model is shown below:
 ## Results
 
 Firstly, I trained my model on GTZAN dataset with 10 genres. The resulting network was performing well on validation data, which were taken from the same dataset. 
-However, when giving it my own song, it was often classified badly, i.e., metal was classified as reggae or rap. I came to conclusion, that the GTZAN dataset consisted of 
-really old songs with low quality signal and with metal genre in particular the audios are often from a live performance, where the noise is dominating over the song.
->Being a huge fan of metal music, this was unacceptable for me.
+However, when giving it my own song, it often classified the song badly, i.e., metal was classified as reggae or rap. I came to a conclusion, that the GTZAN dataset consisted of 
+really old songs with low quality signal and particularly in metal genre the audios are often live performances, where the noise is dominating over the song.
+>Being a huge fan of metal music, this was unacceptable to me.
 
 And that is why I decided to create my personal dataset with only 5 classes, 
-which I gathered manually. Classification on 10 classes is shown below:
+which I gathered manually. Classification examples of 10 classes is shown below:
 
 <img src="README/results_10.png">
 
